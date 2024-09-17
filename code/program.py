@@ -1,29 +1,43 @@
-'''
-This is the main program. 
-You should read the packaging.txt in the data folder.
-Each line contains one package description. 
-You should parse the package description using parse_packaging()
-print the total number of items in the package using calc_total_units()
-along with the unit using get_unit()
-place each package in a list and save in JSON format.
+import json
 
-Example:
+def parse_packaging(package_desc):
+    # Implement parsing logic
+    # Example return format: [{'eggs': 12}, {'carton': 1}]
+    items = package_desc.split(" / ")
+    parsed = []
+    for item in items:
+        parts = item.split(" in ")
+        amount, unit = parts[0].split(' ', 1)
+        parsed.append({unit: int(amount)})
+    return parsed
 
-    INPUT (example data/packaging.txt file):
+def calc_total_units(parsed_items):
+    total = 1
+    for item in parsed_items:
+        for _, amount in item.items():
+            total *= amount
+    return total
+
+def get_unit(parsed_items):
+    # Assume the unit to be the first item's key
+    return list(parsed_items[0].keys())[0]
+
+def main():
+    with open('data/packaging.txt', 'r') as f:
+        lines = f.readlines()
     
-    12 eggs in 1 carton
-    6 bars in 1 pack / 12 packs in 1 carton
+    all_packages = []
 
-    OUTPUT: (print to console)
+    for line in lines:
+        package_desc = line.strip()
+        parsed_items = parse_packaging(package_desc)
+        total_units = calc_total_units(parsed_items)
+        unit = get_unit(parsed_items)
+        print(f"{package_desc} => total units: {total_units} {unit}")
+        all_packages.append(parsed_items)
 
-    12 eggs in 1 carton => total units: 12 eggs
-    6 bars in 1 pack / 12 packs in 1 carton => total units: 72 bars
+    with open('data/packaging.json', 'w') as json_file:
+        json.dump(all_packages, json_file, indent=4)
 
-    OUTPUT (example data/packaging.json file):
-    [
-        [{ 'eggs' : 12}, {'carton' : 1}],
-        [{ 'bars' : 6}, {'packs' : 12}, {'carton' : 1}],
-    ]    
-'''
-
-# TODO: Write code
+if __name__ == "__main__":
+    main()

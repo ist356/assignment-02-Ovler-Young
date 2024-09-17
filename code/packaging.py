@@ -18,7 +18,17 @@ def parse_packaging(packaging_data: str) -> list[dict]:
     input: "20 pieces in 1 pack / 10 packs in 1 carton / 4 cartons in 1 box"
     output: [{ 'pieces' : 20}, {'packs' : 10}, {'carton' : 4}, {'box' : 1}]
     '''
-    pass # TODO: Replace this line and write code
+    package_parts = packaging_data.split(' / ')
+    package_list = []
+
+    for part in package_parts:
+        items = part.split(' in ')
+        quantity, item = items[0].split(' ')
+        container_quantity, container = items[1].split(' ')
+        package_list.append({item: int(quantity)})
+        package_list.append({container: int(container_quantity)})
+
+    return package_list
 
 
 def calc_total_units(package: list[dict]) -> int:
@@ -33,7 +43,10 @@ def calc_total_units(package: list[dict]) -> int:
     input: [{ 'pieces' : 20}, {'packs' : 10}, {'carton' : 4}, {'box' : 1}]
     output: 800 (e.g. 20*10*4*1)
     '''
-    pass # TODO: Replace this line and write code
+    total = 1
+    for item in package:
+        total *= list(item.values())[0]
+    return total
 
 
 def get_unit(package: list[dict]) -> str:
@@ -49,7 +62,7 @@ def get_unit(package: list[dict]) -> str:
     output: pieces
 
     '''
-    pass # TODO: Replace this line and write code
+    return list(package[0].keys())[0]
 
 # This will only run from here, not when imported
 # # Use this for testing / debugging cases with the debugger
@@ -62,3 +75,4 @@ if __name__ == '__main__':
     package_total = calc_total_units(package)
     unit = get_unit(package)
     print(f"{package_total} {unit} total")
+
