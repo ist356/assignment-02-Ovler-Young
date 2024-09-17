@@ -23,3 +23,6 @@ Examples:
 
 `--- Reflection Below This Line ---`
 
+Copilot can make some small part of the code running, but not all. We still need to write by ourselfs.
+
+By checking the difference, it's much easier to find which part is wrong, and which way can we improve. It's strange that copilot can't fix it, but after looking through by myself, I'm all set!
