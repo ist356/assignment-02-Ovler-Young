@@ -17,17 +17,32 @@ def parse_packaging(packaging_data: str) -> list[dict]:
 
     input: "20 pieces in 1 pack / 10 packs in 1 carton / 4 cartons in 1 box"
     output: [{ 'pieces' : 20}, {'packs' : 10}, {'carton' : 4}, {'box' : 1}]
+    
+            ("12 eggs in 1 carton", [{ 'eggs' : 12}, {'carton' : 1}]),
+            ("6 bars in 1 pack / 12 packs in 1 carton", [{ 'bars' : 6}, {'packs' : 12}, {'carton' : 1}]),
+            ("20 pieces in 1 pack / 10 packs in 1 carton / 4 cartons in 1 box", [{ 'pieces' : 20}, {'packs' : 10}, {'cartons' : 4}, {'box' : 1}]),
+            ("2 foo in 1 bar / 3 bars in 1 baz / 4 baz in 1 qux / 2 qux in 1 biz ", [{ 'foo' : 2}, {'bars' : 3}, {'baz' : 4}, {'qux' : 2}, {'biz' : 1}]),
+            ("25 balls in 1 bucket / 4 buckets in 1 bin", [{'balls' : 25}, {'buckets' : 4}, {'bin' : 1}]),
     '''
-    package_parts = packaging_data.split(' / ')
     package_list = []
-
-    for part in package_parts:
-        items = part.split(' in ')
-        quantity, item = items[0].split(' ')
-        container_quantity, container = items[1].split(' ')
-        package_list.append({item: int(quantity)})
-        package_list.append({container: int(container_quantity)})
-
+    phrases = packaging_data.strip().split(' / ')
+    for i, phrase in enumerate(phrases):
+        parts = phrase.strip().split(' in ')
+        if len(parts) != 2:
+            continue  # Skip if the phrase is not in the expected format
+        first_part, second_part = parts
+        try:
+            number1_str, item1 = first_part.strip().split(' ', 1)
+            number1 = int(number1_str)
+            number2_str, item2 = second_part.strip().split(' ', 1)
+            number2 = int(number2_str)
+        except ValueError:
+            continue  # Skip if the numbers are not integers
+        # Add the first item
+        package_list.append({item1.strip(): number1})
+        # Add the second item only if it's the last phrase
+        if i == len(phrases) - 1:
+            package_list.append({item2.strip(): number2})
     return package_list
 
 
